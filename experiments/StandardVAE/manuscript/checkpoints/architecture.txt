@@ -1,0 +1,52 @@
+hVAE(
+  (blocks): OrderedModuleDict(
+    (_values): ModuleList(
+      (0): InputBlock(
+        (input): InputPipeline()
+        (net): Flatten(start_dim=1, end_dim=-1)
+      )
+      (1): GenBlock(
+        
+        output_distribution=laplace
+        
+        fuse_prior=None 
+        
+        (input): InputPipeline()
+        (prior_net): SerializableSequential()
+        (posterior_net): MLPNet(
+          residual=False, weight_norm=False
+          (activation): Softplus(beta=1, threshold=20)
+          (output_activation): Softplus(beta=1, threshold=20)
+          (mlp_layers): Sequential(
+            (0): Linear(in_features=1600, out_features=2000, bias=True)
+            (1): Softplus(beta=1, threshold=20)
+            (2): Linear(in_features=2000, out_features=2000, bias=True)
+            (3): Softplus(beta=1, threshold=20)
+            (4): Linear(in_features=2000, out_features=3600, bias=True)
+          )
+        )
+        (condition): InputPipeline()
+      )
+      (2): OutputBlock(
+        
+        output_distribution=normal
+        
+        optimal_sigma=False, 
+        stddev=0.4000000059604645, 
+        max_sigma=None
+        
+        (input): InputPipeline()
+        (prior_net): SerializableSequential(
+          (0): MLPNet(
+            residual=False, weight_norm=False
+            (mlp_layers): Sequential(
+              (0): Linear(in_features=1800, out_features=1600, bias=True)
+            )
+          )
+          (1): Unflatten(dim=1, unflattened_size=(1, 40, 40))
+        )
+      )
+    )
+  )
+  (prior): ParameterDict(  (z_prior): Parameter containing: [torch.cuda.FloatTensor of size 3600 (cuda:0)])
+)
