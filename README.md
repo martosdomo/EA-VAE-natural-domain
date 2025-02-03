@@ -74,6 +74,26 @@ pip install -r requirements.txt
 
 ---
 
+## Data from the manuscript
+
+Supplementary data is available at https://zenodo.org/records/14795434. This includes the model files for the trained models and evaluated data on divisive normalization analysis. 
+
+Upacking from the `eavae-data.zip` file, you should move the folders `divisivenorm` and `experiments` and their content to their respective places in 
+
+```
+/path/to/your/project/EA-VAE-natural-domain/divisivenorm
+&
+/path/to/your/project/EA-VAE-natural-domain/experiments
+```
+
+respectively, for example with:
+
+```
+unzip eavae-data.zip -d /path/to/your/project/EA-VAE-natural-domain/
+
+```
+---
+
 ## Choosing a model
 
 Models are defined in a single file, in the `models` folder. The models presented in the manuscript are included with the original hyperparameters as `StandardVAE.py`, `EAVAE_softlaplace.py` and `EAVAE_lognormal.py`. You can use these models, or train your own.
@@ -135,7 +155,7 @@ To perform the DN experiments, you need to evaluate your models as seen above. T
 1. In `divisivenorm/fit_schwartz2001` and in `divisivenorm/plot_bowties` set your model names in *config.py*.
 2. Run `divisivenorm/fit_schwartz2001/fit_schwartz2001.py` and `divisivenorm/plot_bowties/plot_bowties.py`. This will save necessary files to `divisivenorm/results`. Note that the former includes a longer training process. 
 
-Example data of StandardVAE and EAVAE_lognormal is included in the repository in `divisivenorm/results`. You can also use this for plotting.
+Example data of StandardVAE and EAVAE_lognormal can be downloaded from Zenodo to `divisivenorm/results` as mentioned above. You can also use this for plotting.
 
 To plot the figures:
 
