@@ -199,7 +199,7 @@ loss_params = Hyperparams(
     vae_beta_anneal_start=100 * train_params.steps_per_epoch,
     vae_beta_anneal_steps=100 * train_params.steps_per_epoch,
     vae_beta_min=0.01,          # latent z starting beta
-    vae_beta_max=1.,           # latent z final beta, original
+    vae_beta_max=0.5,           # latent z final beta, original
     contrast_beta_start=None,   # latent s starting beta, variable not present
 
     # logistic beta schedule

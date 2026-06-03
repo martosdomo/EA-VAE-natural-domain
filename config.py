@@ -4,7 +4,7 @@ def get_hparams():
     # SET WHICH params TO USE HERE
     # |    |    |    |    |    |
     # v    v    v    v    v    v
-    import models.trial as params
+    import models.StandardVAE_b_0_5 as params
 
     config = Hyperparams(
         log_params=params.log_params,
