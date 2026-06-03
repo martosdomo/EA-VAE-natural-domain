@@ -81,7 +81,7 @@ MODEL HYPERPARAMETERS
 model_params = Hyperparams(
     model=_model,
     device='cuda',
-    seed=0,
+    seed=1,
 
     # Latent layer distribution base can be in ('std', 'logstd').
     # Determines if the model should predict

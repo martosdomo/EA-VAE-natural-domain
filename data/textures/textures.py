@@ -17,7 +17,8 @@ class TexturesDataset(DataSet):
         dataset_dir = os.path.join(root, 'data/datasets/textures')
         os.makedirs(dataset_dir, exist_ok=True)
         if not len(os.listdir(dataset_dir)) == 4:
-            run_download_script()
+            pass
+            # run_download_script()
 
         if self.type == "natural":
             dataset = load_natural_ds(image_size=self.image_size, with_labels=self.with_labels)
