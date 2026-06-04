@@ -4,7 +4,10 @@ def get_hparams():
     # SET WHICH params TO USE HERE
     # |    |    |    |    |    |
     # v    v    v    v    v    v
-    import models.trial as params
+    #import models.trial as params
+    #import models.EAVAE_softlaplace_beta1_1_0_beta2_1_0 as params
+    #import models.EAVAE_softlaplace_beta1_1_0_beta2_1_5 as params
+    import models.EAVAE_softlaplace_beta1_1_0_beta2_0_5 as params
 
     config = Hyperparams(
         log_params=params.log_params,

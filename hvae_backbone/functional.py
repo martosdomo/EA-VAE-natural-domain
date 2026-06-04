@@ -359,7 +359,17 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
 
         corr_stack = torch.stack((contrast, c_posterior_means))
         val_results["contrast_correlation"] = torch.corrcoef(corr_stack)[0, 1]
+        
+        current_beta = params.kldiv_schedule(global_step).detach().cpu()
 
+        if current_beta.numel() == 1:
+            val_results["current_beta"] = current_beta.item()
+            beta_str = f"{val_results['current_beta']:.4f}"
+        else:
+            val_results["current_beta_1"] = current_beta[0].item()
+            val_results["current_beta_2"] = current_beta[1].item()
+            beta_str = f"[{val_results['current_beta_1']:.4f}, {val_results['current_beta_2']:.4f}]"
+            
         val_inputs = val_inputs.detach().cpu()
         val_outputs = val_outputs.detach().cpu()
         val_output_means = val_output_means.detach().cpu()
@@ -389,7 +399,8 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
         f' SSIM: {global_results["ssim"]:.4f} |'
         f' c_mean: {global_results["c_mean"]:.4f} |'
         f' c_means_std: {global_results["c_means_std"]:.4f} |'
-        f' contrast_correlation: {global_results["contrast_correlation"]:.4f}')
+        f' contrast_correlation: {global_results["contrast_correlation"]:.4f} |'
+        f' current_beta: {beta_str}')
 
     return global_results, (original, output_samples, output_means)
 

@@ -17,6 +17,10 @@ def get_beta_schedule():
         beta_max = params.loss_params.vae_beta_max
     else:
         beta_max = 1.
+    if "contrast_beta_end" in params.loss_params.keys():
+        contrast_beta_end = params.loss_params.contrast_beta_end
+    else:
+        contrast_beta_end = 1.
     return LogisticBetaSchedule(
         activation_step=params.loss_params.vae_beta_activation_steps,
         growth_rate=params.loss_params.vae_beta_growth_rate) \
@@ -26,7 +30,8 @@ def get_beta_schedule():
         anneal_steps=params.loss_params.vae_beta_anneal_steps,
         contrast_beta_start=params.loss_params.contrast_beta_start,
         beta_min=params.loss_params.vae_beta_min,
-        beta_max=beta_max) \
+        beta_max=beta_max,
+        contrast_beta_end=contrast_beta_end) \
         if params.loss_params.variation_schedule == 'Linear' \
         else lambda x: torch.as_tensor(1.)
 
@@ -99,11 +104,12 @@ class LinearBetaSchedule:
     Linear beta schedule for VAE
     from Efficient-VDVAE paper
     """
-    def __init__(self, anneal_start, anneal_steps, contrast_beta_start, beta_min, beta_max=1.):
+    def __init__(self, anneal_start, anneal_steps, contrast_beta_start, beta_min, beta_max=1., contrast_beta_end=1.):
         self.beta_max = beta_max
         self.anneal_start = anneal_start
         self.anneal_steps = anneal_steps
         self.contrast_beta_start = contrast_beta_start
+        self.contrast_beta_end = contrast_beta_end
         self.beta_min = beta_min
 
     def __call__(self, step):
@@ -112,11 +118,10 @@ class LinearBetaSchedule:
         if self.contrast_beta_start is None:
             return beta_1
         else:
-            beta_2 = self.contrast_beta_start + (1 - self.contrast_beta_start) * torch.clamp(
+            beta_2 = self.contrast_beta_start + (self.contrast_beta_end - self.contrast_beta_start) * torch.clamp(
                 torch.tensor((step - self.anneal_start) / self.anneal_steps), min=0, max=1)
             return torch.tensor((beta_1, beta_2))
-                           
-
+                                 
 class ConstantLearningRate(LRScheduler):
     """
     Constant learning rate scheduler
