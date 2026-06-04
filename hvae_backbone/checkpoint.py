@@ -55,7 +55,7 @@ class Checkpoint:
 
     @staticmethod
     def load(path):
-        experiment: Checkpoint = torch.load(path, map_location='cpu')
+        experiment: Checkpoint = torch.load(path, map_location='cpu', weights_only=False)
         return experiment
 
     def get_model(self):

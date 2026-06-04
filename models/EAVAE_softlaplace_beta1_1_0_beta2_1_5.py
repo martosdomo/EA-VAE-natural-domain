@@ -60,7 +60,7 @@ softlaplace_manuscript = os.path.join(root, 'experiments/EAVAE_softlaplace/manus
 
 # Your trained models
 # ...
-
+checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_1_5/2026-06-02__14-31/checkpoints/checkpoint_5000.pth')
 log_params = Hyperparams(
     name='EAVAE_softlaplace_beta1_1_0_beta2_1_5',
 
@@ -234,7 +234,7 @@ SYNTHESIS HYPERPARAMETERS
 --------------------
 """
 analysis_params = Hyperparams(
-    batch_size=128,
+    batch_size=512,
 
     white_noise_analysis=dict(
         z=dict(

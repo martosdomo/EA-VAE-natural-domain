@@ -359,7 +359,8 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
 
         corr_stack = torch.stack((contrast, c_posterior_means))
         val_results["contrast_correlation"] = torch.corrcoef(corr_stack)[0, 1]
-        
+        if global_step is None:
+            global_step = params.loss_params.vae_beta_anneal_steps * 10.
         current_beta = params.kldiv_schedule(global_step).detach().cpu()
 
         if current_beta.numel() == 1:

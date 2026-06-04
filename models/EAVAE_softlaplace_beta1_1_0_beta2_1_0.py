@@ -60,9 +60,9 @@ softlaplace_manuscript = os.path.join(root, 'experiments/EAVAE_softlaplace/manus
 
 # Your trained models
 # ...
-
+checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_1_0/2026-06-01__15-52/checkpoints/checkpoint_5000.pth')
 log_params = Hyperparams(
-    name='EAVAE_softlaplace',
+    name='EAVAE_softlaplace_beta1_1_0_beta2_1_0',
 
     # TRAIN LOG
     # --------------------
@@ -73,7 +73,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=softlaplace_manuscript,
+    load_from_eval=checkpoint_path,
 )
 
 """
@@ -96,7 +96,7 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='EAVAE_softlaplace',
+    model_name='EAVAE_softlaplace_beta1_1_0_beta2_1_0',
     model_type='eavae',
 )
     
@@ -233,7 +233,7 @@ SYNTHESIS HYPERPARAMETERS
 --------------------
 """
 analysis_params = Hyperparams(
-    batch_size=128,
+    batch_size=512,
 
     white_noise_analysis=dict(
         z=dict(
