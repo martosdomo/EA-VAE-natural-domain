@@ -107,6 +107,9 @@ class LinearBetaSchedule:
         self.beta_min = beta_min
 
     def __call__(self, step):
+        if step == None:
+            warnings.warn('Global step is None, using beta_max value')
+            step = 1e10
         beta_1 = self.beta_min + (self.beta_max - self.beta_min) * torch.clamp(
              torch.tensor((step - self.anneal_start) / self.anneal_steps), min=0, max=1)
         if self.contrast_beta_start is None:

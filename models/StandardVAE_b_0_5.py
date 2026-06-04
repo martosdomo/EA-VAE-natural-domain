@@ -55,7 +55,7 @@ from env import ROOT_DIR as root
 laplace_manuscript = os.path.join(root, 'experiments/StandardVAE/manuscript/checkpoints/checkpoint_5000.pth')
 
 # Your trained models
-# ...
+trained_model_3500 = '/workspace/EA-VAE-natural-domain/experiments/StandardVAE/2026-06-03__15-27/checkpoints/checkpoint_3500.pth'
 
 log_params = Hyperparams(
     name='StandardVAE',
@@ -68,8 +68,8 @@ log_params = Hyperparams(
     checkpoint_interval_in_epochs=500,
     eval_interval_in_epochs=1,
 
-    load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=laplace_manuscript,
+    load_from_train=trained_model_3500,  # resume checkpoint from local path
+    load_from_eval=trained_model_3500,
 )
 
 """

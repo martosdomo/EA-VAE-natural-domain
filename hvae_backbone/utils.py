@@ -81,6 +81,7 @@ def load_model(load_from):
     assert load_from is not None
     experiment = None
     print(f"Loading experiment from {load_from}")
+    load_from_file = None
     if os.path.exists(load_from):
         load_from_file = load_from
 
