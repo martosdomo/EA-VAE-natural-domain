@@ -1,29 +1,32 @@
 def _model():
-    from hvae_backbone.block import InputBlock, GenBlock, OutputBlock
+    from hvae_backbone.block import InputBlock, ContrastiveOutputBlock, ContrastiveGenBlock
     from hvae_backbone.hvae import hVAE as hvae
     from hvae_backbone.elements.layers import Flatten, Unflatten
     from hvae_backbone.utils import OrderedModuleDict
 
     _blocks = OrderedModuleDict(
         x=InputBlock(
-            net=Flatten(start_dim=1),
+            net=Flatten(start_dim=1) #0: batch-flatten, 1: sample-flatten
         ),
-        z=GenBlock(
+        z=ContrastiveGenBlock(
             prior_net=None,
             posterior_net=x_to_z_net,
             input_id="z_prior",
             condition="x",
             output_distribution="laplace",
+            contrast_distribution='lognormal',
         ),
-        x_hat=OutputBlock(
-            net=[z_to_x_net, Unflatten(1, data_params.shape)],
+        x_hat=ContrastiveOutputBlock(
             input_id="z",
+            contrast_dims=1,
+            net=[z_to_x_net, Unflatten(1, data_params.shape)],
             output_distribution="normal",
             stddev=0.4
         ),
     )
 
     prior_shape = (1800, )
+
     _prior = dict(
         z_prior=torch.nn.Parameter(torch.zeros(2*prior_shape[0]),
                                    requires_grad=False)
@@ -49,27 +52,28 @@ from hvae_backbone import Hyperparams
 LOGGING HYPERPARAMETERS
 --------------------
 """
+# Trained EAVAE model from the manuscript
+# with lognormal prior for the scaling variable
 import os
 from env import ROOT_DIR as root
-# Trained Standard VAE model from the manuscript
-laplace_manuscript = os.path.join(root, 'experiments/StandardVAE/manuscript/checkpoints/checkpoint_5000.pth')
+lognormal_manuscript = os.path.join(root, 'experiments/EAVAE_lognormal/manuscript/checkpoints/checkpoint_5000.pth')
 
 # Your trained models
-trained_model_3500 = '/workspace/EA-VAE-natural-domain/experiments/StandardVAE/2026-06-03__15-27/checkpoints/checkpoint_3500.pth'
+# ...
 
 log_params = Hyperparams(
-    name='StandardVAE',
+    name='EAVAE_lognormal_b1_0-5_b2_0-25',
 
     # TRAIN LOG
     # --------------------
-      # Defines how often to save a model checkpoint and logs to disk.
+    # Defines how often to save a model checkpoint and logs to disk.
 
     save_checkpoints_locally=True,
     checkpoint_interval_in_epochs=500,
     eval_interval_in_epochs=1,
 
-    load_from_train=trained_model_3500,  # resume checkpoint from local path
-    load_from_eval=trained_model_3500,
+    load_from_train=None,  # resume checkpoint from local path
+    load_from_eval=lognormal_manuscript,
 )
 
 """
@@ -81,7 +85,7 @@ MODEL HYPERPARAMETERS
 model_params = Hyperparams(
     model=_model,
     device='cuda',
-    seed=1,
+    seed=3,
 
     # Latent layer distribution base can be in ('std', 'logstd').
     # Determines if the model should predict
@@ -92,10 +96,10 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='StandardVAE',
-    model_type='vanilla',
+    model_name='EAVAE_lognormal_b1_0-5_b2_0-25',
+    model_type='eavae',
 )
-
+    
 """
 --------------------
 DATA HYPERPARAMETERS
@@ -159,11 +163,11 @@ optimizer_params = Hyperparams(
     # exponential or cosine
     #   Defines the number of steps over which the learning rate
     #   decays to the minimum value (after decay_start)
-    decay_steps=50 * train_params.steps_per_epoch,
+    decay_steps=35 * train_params.steps_per_epoch,
     #   Defines the update at which the learning rate starts to decay
-    decay_start=50 * train_params.steps_per_epoch,
+    decay_start=40 * train_params.steps_per_epoch,
     #   Defines the minimum learning rate value
-    min_learning_rate=3e-5, #3e-5
+    min_learning_rate=3e-5,#1e-4,
     # exponential only
     #   Defines the decay rate of the exponential learning rate decay
     decay_rate=0.5,
@@ -198,9 +202,10 @@ loss_params = Hyperparams(
     # linear beta schedule
     vae_beta_anneal_start=100 * train_params.steps_per_epoch,
     vae_beta_anneal_steps=100 * train_params.steps_per_epoch,
-    vae_beta_min=0.01,          # latent z starting beta
-    vae_beta_max=0.5,           # latent z final beta, original
-    contrast_beta_start=None,   # latent s starting beta, variable not present
+    vae_beta_min=1,             # latent z starting beta
+    vae_beta_max=0.5,             # latent z final beta
+    contrast_beta_start=10.0,   # latent s starting beta
+    contrast_beta_max=0.25,    # latent s final beta
 
     # logistic beta schedule
     vae_beta_activation_steps=10000,
@@ -230,7 +235,6 @@ SYNTHESIS HYPERPARAMETERS
 --------------------
 """
 analysis_params = Hyperparams(
-    # inference batch size (all modes)
     batch_size=128,
 
     white_noise_analysis=dict(
@@ -261,7 +265,7 @@ z_size = 1800
 x_to_z_net = Hyperparams(
     type='mlp',
     input_size=x_size,
-    hidden_sizes=[2000,2000],
+    hidden_sizes=[2000, 2000],
     output_size=2*z_size,
     activation=torch.nn.Softplus(),
     residual=False,
@@ -271,7 +275,7 @@ x_to_z_net = Hyperparams(
 
 z_to_x_net = Hyperparams(
     type='mlp',
-    input_size=z_size,
+    input_size=z_size-1,
     hidden_sizes=[],
     output_size=x_size,
     activation=None,

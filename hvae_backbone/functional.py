@@ -392,8 +392,22 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
         f' c_mean: {global_results["c_mean"]:.4f} |'
         f' c_means_std: {global_results["c_means_std"]:.4f} |'
         f' contrast_correlation: {global_results["contrast_correlation"]:.4f} |'
-        f' current_beta: {global_results["current_beta"]:.4f}'
+        # f' current_beta: {global_results["current_beta"]:.4f}'
     )
+
+    if isinstance(val_results["current_beta"], torch.Tensor) and val_results["current_beta"].numel() == 2:
+        val_results["current_beta_z"] = val_results["current_beta"][0].detach().cpu()
+        val_results["current_beta_s"] = val_results["current_beta"][1].detach().cpu()
+        log(
+            f'Validation Stats |'
+            f' current_beta_z: {val_results["current_beta_z"]:.4f} |'
+            f' current_beta_s: {val_results["current_beta_s"]:.4f}'
+        )
+    else:
+        log(
+            f'Validation Stats |'
+            f' current_beta: {val_results["current_beta"]:.4f}'
+        )
 
     return global_results, (original, output_samples, output_means)
 

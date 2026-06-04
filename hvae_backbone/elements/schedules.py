@@ -25,6 +25,7 @@ def get_beta_schedule():
         anneal_start=params.loss_params.vae_beta_anneal_start,
         anneal_steps=params.loss_params.vae_beta_anneal_steps,
         contrast_beta_start=params.loss_params.contrast_beta_start,
+        contrast_beta_max=params.loss_params.contrast_beta_max,
         beta_min=params.loss_params.vae_beta_min,
         beta_max=beta_max) \
         if params.loss_params.variation_schedule == 'Linear' \
