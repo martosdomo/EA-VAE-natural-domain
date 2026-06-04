@@ -73,7 +73,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=softlaplace_manuscript,
+    load_from_eval=checkpoint_path,
 )
 
 """

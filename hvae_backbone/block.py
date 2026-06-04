@@ -506,20 +506,50 @@ class ContrastiveGenBlock(SimpleGenBlock):
 
     def serialize(self) -> dict:
         serialized = super().serialize()
+        serialized["posterior_net"] = self.posterior_net.serialize()
+        serialized["condition"] = self.condition.serialize()
         serialized["contrast_distribution"] = self.contrast_distribution
+        serialized["contrast_dims"] = self.contrast_dims
         return serialized
 
     @staticmethod
     def deserialize(serialized: dict):
         prior_net = serialized["prior_net"]["type"].deserialize(serialized["prior_net"])
-        posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
+        
+        # Handle legacy checkpoints that don't have all fields serialized
+        if "posterior_net" not in serialized or "condition" not in serialized:
+            from hvae_backbone import params as global_params
+            if global_params is None:
+                raise KeyError("Legacy checkpoint missing posterior_net/condition and global params not initialized. "
+                             "Cannot load checkpoint without the model template.")
+            
+            # Reconstruct missing fields from the current model template
+            template_model = global_params.model_params.model()
+            template_block = template_model.blocks[serialized["output"]]
+            
+            if "posterior_net" not in serialized:
+                posterior_net = template_block.posterior_net
+            else:
+                posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
+            
+            if "condition" not in serialized:
+                # Deserialize condition from template's serialized representation
+                template_serialized = template_block.serialize()
+                condition = InputPipeline.deserialize(template_serialized["condition"])
+            else:
+                condition = InputPipeline.deserialize(serialized["condition"])
+        else:
+            posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
+            condition = InputPipeline.deserialize(serialized["condition"])
+        
         return ContrastiveGenBlock(
             prior_net=prior_net,
             posterior_net=posterior_net,
             input_id=InputPipeline.deserialize(serialized["input"]),
-            condition=InputPipeline.deserialize(serialized["condition"]),
+            condition=condition,
             output_distribution=serialized["output_distribution"],
-            contrast_distribution=serialized["contrast_distribution"],
+            contrast_distribution=serialized.get("contrast_distribution", "lognormal"),
+            contrast_dims=serialized.get("contrast_dims", 1),
         )
     
     def extra_repr(self) -> str:

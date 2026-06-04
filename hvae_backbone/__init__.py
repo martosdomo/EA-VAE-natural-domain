@@ -44,7 +44,7 @@ def training(config):
         epoch = 0
         model = p.model_params.model()
 
-    model.summary()
+    # model.summary()  # Skip summary to avoid issues with dummy input setup in loaded models
     model_parameters = filter(lambda param: param.requires_grad, model.parameters())
     logger.info(f'Number of trainable params '
                 f'{np.sum([np.prod(v.size()) for v in model_parameters]) / 1000000:.3f}m.')
@@ -100,7 +100,7 @@ def testing(config):
     model = checkpoint.get_model()
     print(f'Model Checkpoint is loaded from {p.log_params.load_from_eval}')
 
-    model.summary()
+    # model.summary()  # Skip summary to avoid issues with dummy input setup in loaded models
     model = model.to(device)
 
     dataset = p.data_params.dataset(**p.data_params.params)
