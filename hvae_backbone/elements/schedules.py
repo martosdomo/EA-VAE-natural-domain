@@ -24,10 +24,10 @@ def get_beta_schedule():
         else LinearBetaSchedule(
         anneal_start=params.loss_params.vae_beta_anneal_start,
         anneal_steps=params.loss_params.vae_beta_anneal_steps,
-        contrast_beta_start=params.loss_params.contrast_beta_start,
-        contrast_beta_max=params.loss_params.contrast_beta_max,
+        contrast_beta_start=params.loss_params.contrast_beta_start if params.loss_params.contrast_beta_start is not None else None,
+        contrast_beta_max=params.loss_params.contrast_beta_max if params.loss_params.contrast_beta_start is not None else 1.0,
         beta_min=params.loss_params.vae_beta_min,
-        beta_max=beta_max) \
+        beta_max=params.loss_params.vae_beta_max if params.loss_params.vae_beta_max is not None else 1.0) \
         if params.loss_params.variation_schedule == 'Linear' \
         else lambda x: torch.as_tensor(1.)
 
@@ -100,12 +100,13 @@ class LinearBetaSchedule:
     Linear beta schedule for VAE
     from Efficient-VDVAE paper
     """
-    def __init__(self, anneal_start, anneal_steps, contrast_beta_start, beta_min, beta_max=1.):
-        self.beta_max = beta_max
+    def __init__(self, anneal_start, anneal_steps, contrast_beta_start, contrast_beta_max, beta_min, beta_max):
         self.anneal_start = anneal_start
         self.anneal_steps = anneal_steps
         self.contrast_beta_start = contrast_beta_start
+        self.contrast_beta_max = contrast_beta_max
         self.beta_min = beta_min
+        self.beta_max = beta_max
 
     def __call__(self, step):
         if step == None:
@@ -116,7 +117,7 @@ class LinearBetaSchedule:
         if self.contrast_beta_start is None:
             return beta_1
         else:
-            beta_2 = self.contrast_beta_start + (1 - self.contrast_beta_start) * torch.clamp(
+            beta_2 = self.contrast_beta_start + (self.contrast_beta_max - self.contrast_beta_start) * torch.clamp(
                 torch.tensor((step - self.anneal_start) / self.anneal_steps), min=0, max=1)
             return torch.tensor((beta_1, beta_2))
                            

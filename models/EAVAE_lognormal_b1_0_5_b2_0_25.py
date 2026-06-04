@@ -62,7 +62,7 @@ lognormal_manuscript = os.path.join(root, 'experiments/EAVAE_lognormal/manuscrip
 # ...
 
 log_params = Hyperparams(
-    name='EAVAE_lognormal_b1_0-5_b2_0-25',
+    name='EAVAE_lognormal_b1_0_5_b2_0_25',
 
     # TRAIN LOG
     # --------------------
@@ -96,7 +96,7 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='EAVAE_lognormal_b1_0-5_b2_0-25',
+    model_name='EAVAE_lognormal_b1_0_5_b2_0_25',
     model_type='eavae',
 )
     

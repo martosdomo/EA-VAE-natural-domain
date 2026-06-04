@@ -62,7 +62,7 @@ lognormal_manuscript = os.path.join(root, 'experiments/EAVAE_lognormal/manuscrip
 # ...
 
 log_params = Hyperparams(
-    name='EAVAE_lognormal_b1_0-5_b2_1',
+    name='EAVAE_lognormal_b1_0_5_b2_0_5',
 
     # TRAIN LOG
     # --------------------
@@ -85,7 +85,7 @@ MODEL HYPERPARAMETERS
 model_params = Hyperparams(
     model=_model,
     device='cuda',
-    seed=5,
+    seed=4,
 
     # Latent layer distribution base can be in ('std', 'logstd').
     # Determines if the model should predict
@@ -96,7 +96,7 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='EAVAE_lognormal_b1_0-5_b2_1',
+    model_name='EAVAE_lognormal_b1_0_5_b2_0_5',
     model_type='eavae',
 )
     
@@ -205,7 +205,7 @@ loss_params = Hyperparams(
     vae_beta_min=1,             # latent z starting beta
     vae_beta_max=0.5,             # latent z final beta
     contrast_beta_start=10.0,   # latent s starting beta
-    contrast_beta_max=1,    # latent s final beta
+    contrast_beta_max=0.5,    # latent s final beta
 
     # logistic beta schedule
     vae_beta_activation_steps=10000,

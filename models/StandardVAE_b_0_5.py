@@ -58,7 +58,7 @@ laplace_manuscript = os.path.join(root, 'experiments/StandardVAE/manuscript/chec
 trained_model_3500 = '/workspace/EA-VAE-natural-domain/experiments/StandardVAE/2026-06-03__15-27/checkpoint_3500.pth'
 
 log_params = Hyperparams(
-    name='StandardVAE_b_0-5',
+    name='StandardVAE_b_0_5',
 
     # TRAIN LOG
     # --------------------
@@ -92,7 +92,7 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='StandardVAE_b_0-5',
+    model_name='StandardVAE_b_0_5',
     model_type='vanilla',
 )
 

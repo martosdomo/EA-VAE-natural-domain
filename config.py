@@ -4,8 +4,8 @@ def get_hparams():
     # SET WHICH params TO USE HERE
     # |    |    |    |    |    |
     # v    v    v    v    v    v
-    import models.StandardVAE_b_0_5 as params
-    # import models.EAVAE_lognormal as params
+    # import models.StandardVAE_b_2 as params
+    import models.EAVAE_lognormal_b1_0_5_b2_0_25 as params
 
     config = Hyperparams(
         log_params=params.log_params,

@@ -361,6 +361,10 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
         val_results["contrast_correlation"] = torch.corrcoef(corr_stack)[0, 1]
 
         val_results["current_beta"] = params.kldiv_schedule(global_step).detach().cpu()
+        if isinstance(val_results["current_beta"], torch.Tensor) and val_results["current_beta"].numel() == 2:
+            val_results["current_beta_z"] = val_results["current_beta"][0].detach().cpu()
+            val_results["current_beta_s"] = val_results["current_beta"][1].detach().cpu()
+            del val_results["current_beta"]
 
         val_inputs = val_inputs.detach().cpu()
         val_outputs = val_outputs.detach().cpu()
@@ -395,18 +399,14 @@ def evaluate(net, val_loader: DataLoader, n_samples: int, global_step: int = Non
         # f' current_beta: {global_results["current_beta"]:.4f}'
     )
 
-    if isinstance(val_results["current_beta"], torch.Tensor) and val_results["current_beta"].numel() == 2:
-        val_results["current_beta_z"] = val_results["current_beta"][0].detach().cpu()
-        val_results["current_beta_s"] = val_results["current_beta"][1].detach().cpu()
+    if "current_beta" in global_results:
         log(
-            f'Validation Stats |'
-            f' current_beta_z: {val_results["current_beta_z"]:.4f} |'
-            f' current_beta_s: {val_results["current_beta_s"]:.4f}'
+            f'current_beta: {global_results["current_beta"]:.4f}'
         )
     else:
         log(
-            f'Validation Stats |'
-            f' current_beta: {val_results["current_beta"]:.4f}'
+            f'current_beta_z: {global_results["current_beta_z"]:.4f} |'
+            f' current_beta_s: {global_results["current_beta_s"]:.4f}'
         )
 
     return global_results, (original, output_samples, output_means)
