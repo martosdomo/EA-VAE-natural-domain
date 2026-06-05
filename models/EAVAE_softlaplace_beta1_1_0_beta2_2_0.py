@@ -60,9 +60,9 @@ softlaplace_manuscript = os.path.join(root, 'experiments/EAVAE_softlaplace/manus
 
 # Your trained models
 # ...
-checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_1_5/2026-06-02__14-31/checkpoints/checkpoint_5000.pth')
+#checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_2_0/2026-06-02__14-31/checkpoints/checkpoint_5000.pth')
 log_params = Hyperparams(
-    name='EAVAE_softlaplace_beta1_1_0_beta2_1_5',
+    name='EAVAE_softlaplace_beta1_1_0_beta2_2_0',
 
     # TRAIN LOG
     # --------------------
@@ -73,7 +73,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=checkpoint_path,
+    load_from_eval=None,
 )
 
 """
@@ -96,7 +96,7 @@ model_params = Hyperparams(
     # Latent layer Gradient smoothing beta. ln(2) ~= 0.6931472.
     # Setting this parameter to 1. disables gradient smoothing (not recommended)
     gradient_smoothing_beta=0.6931472,
-    model_name='EAVAE_softlaplace_beta1_1_0_beta2_1_5',
+    model_name='EAVAE_softlaplace_beta1_1_0_beta2_2_0',
     model_type='eavae',
 )
     
@@ -204,7 +204,7 @@ loss_params = Hyperparams(
     vae_beta_anneal_steps=100 * train_params.steps_per_epoch,
     vae_beta_min=1,             # latent z starting beta
     contrast_beta_start=10.0,   # latent s starting beta
-    contrast_beta_end=1.5,     # latent s ending beta
+    contrast_beta_end=2.0,     # latent s ending beta
 
     # logistic beta schedule
     vae_beta_activation_steps=10000,
