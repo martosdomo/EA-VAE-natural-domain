@@ -59,7 +59,7 @@ from env import ROOT_DIR as root
 lognormal_manuscript = os.path.join(root, 'experiments/EAVAE_lognormal/manuscript/checkpoints/checkpoint_5000.pth')
 
 # Your trained models
-# ...
+checkpoint_2500 = '/workspace/EA-VAE-natural-domain/experiments/EAVAE_lognormal_b1_0_5_b2_0_25/2026-06-04__15-16/checkpoints/checkpoint_2500.pth'
 
 log_params = Hyperparams(
     name='EAVAE_lognormal_b1_0_5_b2_0_25',
@@ -73,7 +73,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=lognormal_manuscript,
+    load_from_eval=checkpoint_2500,
 )
 
 """
@@ -85,7 +85,7 @@ MODEL HYPERPARAMETERS
 model_params = Hyperparams(
     model=_model,
     device='cuda',
-    seed=3,
+    seed=0,
 
     # Latent layer distribution base can be in ('std', 'logstd').
     # Determines if the model should predict
@@ -200,8 +200,8 @@ loss_params = Hyperparams(
     variation_schedule='Linear',
 
     # linear beta schedule
-    vae_beta_anneal_start=100 * train_params.steps_per_epoch,
-    vae_beta_anneal_steps=100 * train_params.steps_per_epoch,
+    vae_beta_anneal_start=200 * train_params.steps_per_epoch,
+    vae_beta_anneal_steps=200 * train_params.steps_per_epoch,
     vae_beta_min=1,             # latent z starting beta
     vae_beta_max=0.5,             # latent z final beta
     contrast_beta_start=10.0,   # latent s starting beta

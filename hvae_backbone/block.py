@@ -432,7 +432,7 @@ class ContrastiveOutputBlock(OutputBlock):
             stddev=serialized.pop("stddev"),
         )
 
-class ContrastiveGenBlock(SimpleGenBlock):
+class ContrastiveGenBlock(GenBlock):
     '''
         Enables having multiple distributions on different latens dimensions.
 
@@ -447,10 +447,11 @@ class ContrastiveGenBlock(SimpleGenBlock):
                  output_distribution: str = 'normal',
                  contrast_distribution: str = 'lognormal',
                  contrast_dims: int = 1):
-        super(ContrastiveGenBlock, self).__init__(prior_net, input_id, output_distribution)
-        self.prior_net = get_net(prior_net)
-        self.posterior_net = get_net(posterior_net)
-        self.condition = InputPipeline(condition)
+        # super(ContrastiveGenBlock, self).__init__(prior_net, input_id, output_distribution)
+        # self.prior_net = get_net(prior_net)
+        # self.posterior_net = get_net(posterior_net)
+        # self.condition = InputPipeline(condition)
+        super().__init__(prior_net, posterior_net, input_id, condition, output_distribution=output_distribution)
         self.contrast_distribution = contrast_distribution
         self.contrast_dims = contrast_dims
 
@@ -507,6 +508,7 @@ class ContrastiveGenBlock(SimpleGenBlock):
     def serialize(self) -> dict:
         serialized = super().serialize()
         serialized["contrast_distribution"] = self.contrast_distribution
+        serialized["contrast_dims"] = self.contrast_dims
         return serialized
 
     @staticmethod
@@ -520,6 +522,7 @@ class ContrastiveGenBlock(SimpleGenBlock):
             condition=InputPipeline.deserialize(serialized["condition"]),
             output_distribution=serialized["output_distribution"],
             contrast_distribution=serialized["contrast_distribution"],
+            contrast_dims=serialized.get("contrast_dims", 1),
         )
     
     def extra_repr(self) -> str:

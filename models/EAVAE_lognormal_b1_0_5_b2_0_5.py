@@ -59,7 +59,7 @@ from env import ROOT_DIR as root
 lognormal_manuscript = os.path.join(root, 'experiments/EAVAE_lognormal/manuscript/checkpoints/checkpoint_5000.pth')
 
 # Your trained models
-# ...
+test_checkpoint = '/workspace/EA-VAE-natural-domain/experiments/EAVAE_lognormal_b1_0_5_b2_0_5/2026-06-05__08-22/checkpoints/checkpoint_1.pth'
 
 log_params = Hyperparams(
     name='EAVAE_lognormal_b1_0_5_b2_0_5',
@@ -69,11 +69,11 @@ log_params = Hyperparams(
     # Defines how often to save a model checkpoint and logs to disk.
 
     save_checkpoints_locally=True,
-    checkpoint_interval_in_epochs=500,
+    checkpoint_interval_in_epochs=100,
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=lognormal_manuscript,
+    load_from_eval=test_checkpoint,
 )
 
 """
@@ -85,7 +85,7 @@ MODEL HYPERPARAMETERS
 model_params = Hyperparams(
     model=_model,
     device='cuda',
-    seed=4,
+    seed=0,
 
     # Latent layer distribution base can be in ('std', 'logstd').
     # Determines if the model should predict

@@ -5,7 +5,7 @@ def get_hparams():
     # |    |    |    |    |    |
     # v    v    v    v    v    v
     # import models.StandardVAE_b_2 as params
-    import models.EAVAE_lognormal_b1_0_5_b2_0_25 as params
+    import models.EAVAE_lognormal_b1_0_5_b2_0_5 as params
 
     config = Hyperparams(
         log_params=params.log_params,
