@@ -253,7 +253,7 @@ if __name__ == '__main__':
         model.eval()
         logger.info(f'Model Checkpoint is loaded from {params.log_params.load_from_eval}')
 
-        # model.summary()  # Skip summary to avoid issues with dummy input setup in loaded models
+        model.summary()  # Skip summary to avoid issues with dummy input setup in loaded models
         dataset_object = params.data_params.dataset(**params.data_params.params)
         dataloader = dataset_object.get_test_loader(params.analysis_params.batch_size)
         imsize = params.data_params.shape[1]

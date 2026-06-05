@@ -432,7 +432,7 @@ class ContrastiveOutputBlock(OutputBlock):
             stddev=serialized.pop("stddev"),
         )
 
-class ContrastiveGenBlock(SimpleGenBlock):
+class ContrastiveGenBlock(GenBlock):
     '''
         Enables having multiple distributions on different latens dimensions.
 
@@ -447,10 +447,11 @@ class ContrastiveGenBlock(SimpleGenBlock):
                  output_distribution: str = 'normal',
                  contrast_distribution: str = 'lognormal',
                  contrast_dims: int = 1):
-        super(ContrastiveGenBlock, self).__init__(prior_net, input_id, output_distribution)
-        self.prior_net = get_net(prior_net)
-        self.posterior_net = get_net(posterior_net)
-        self.condition = InputPipeline(condition)
+        # super(ContrastiveGenBlock, self).__init__(prior_net, input_id, output_distribution)
+        # self.prior_net = get_net(prior_net)
+        # self.posterior_net = get_net(posterior_net)
+        # self.condition = InputPipeline(condition)
+        super().__init__(prior_net, posterior_net, input_id, condition, output_distribution=output_distribution)
         self.contrast_distribution = contrast_distribution
         self.contrast_dims = contrast_dims
 
@@ -506,8 +507,6 @@ class ContrastiveGenBlock(SimpleGenBlock):
 
     def serialize(self) -> dict:
         serialized = super().serialize()
-        serialized["posterior_net"] = self.posterior_net.serialize()
-        serialized["condition"] = self.condition.serialize()
         serialized["contrast_distribution"] = self.contrast_distribution
         serialized["contrast_dims"] = self.contrast_dims
         return serialized
@@ -515,40 +514,15 @@ class ContrastiveGenBlock(SimpleGenBlock):
     @staticmethod
     def deserialize(serialized: dict):
         prior_net = serialized["prior_net"]["type"].deserialize(serialized["prior_net"])
-        
-        # Handle legacy checkpoints that don't have all fields serialized
-        if "posterior_net" not in serialized or "condition" not in serialized:
-            from hvae_backbone import params as global_params
-            if global_params is None:
-                raise KeyError("Legacy checkpoint missing posterior_net/condition and global params not initialized. "
-                             "Cannot load checkpoint without the model template.")
-            
-            # Reconstruct missing fields from the current model template
-            template_model = global_params.model_params.model()
-            template_block = template_model.blocks[serialized["output"]]
-            
-            if "posterior_net" not in serialized:
-                posterior_net = template_block.posterior_net
-            else:
-                posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
-            
-            if "condition" not in serialized:
-                # Deserialize condition from template's serialized representation
-                template_serialized = template_block.serialize()
-                condition = InputPipeline.deserialize(template_serialized["condition"])
-            else:
-                condition = InputPipeline.deserialize(serialized["condition"])
-        else:
-            posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
-            condition = InputPipeline.deserialize(serialized["condition"])
+        posterior_net = serialized["posterior_net"]["type"].deserialize(serialized["posterior_net"])
         
         return ContrastiveGenBlock(
             prior_net=prior_net,
             posterior_net=posterior_net,
             input_id=InputPipeline.deserialize(serialized["input"]),
-            condition=condition,
+            condition=InputPipeline.deserialize(serialized["condition"]),
             output_distribution=serialized["output_distribution"],
-            contrast_distribution=serialized.get("contrast_distribution", "lognormal"),
+            contrast_distribution=serialized["contrast_distribution"],
             contrast_dims=serialized.get("contrast_dims", 1),
         )
     
