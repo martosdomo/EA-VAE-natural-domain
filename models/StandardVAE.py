@@ -52,7 +52,8 @@ LOGGING HYPERPARAMETERS
 import os
 from env import ROOT_DIR as root
 # Trained Standard VAE model from the manuscript
-laplace_manuscript = os.path.join(root, 'experiments/StandardVAE/manuscript/checkpoints/checkpoint_5000.pth')
+# laplace_manuscript = os.path.join(root, 'experiments/StandardVAE/manuscript/checkpoints/checkpoint_5000.pth')
+laplace_manuscript = '/workspace/EA-VAE-natural-domain/experiments/StandardVAE/checkpoints/checkpoint_5000.pth'
 
 # Your trained models
 # ...
