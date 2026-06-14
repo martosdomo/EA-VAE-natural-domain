@@ -60,6 +60,7 @@ from env import ROOT_DIR as root
 
 # Your trained models
 # checkpoint_2500 = '/workspace/EA-VAE-natural-domain/experiments/EAVAE_lognormal_b1_0_5_b2_0_25/2026-06-04__15-16/checkpoints/checkpoint_2500.pth'
+trained_model = '/workspace/EA-VAE-natural-domain/experiments/EAVAE_softlaplace_b1_0_5_b2_0_25/2026-06-11__16-06/checkpoints/checkpoint_5000.pth'
 
 log_params = Hyperparams(
     name='EAVAE_softlaplace_b1_0_5_b2_0_25',
@@ -73,7 +74,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=None,
+    load_from_eval=trained_model,
 )
 
 """
