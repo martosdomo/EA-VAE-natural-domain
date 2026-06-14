@@ -8,8 +8,8 @@ def get_hparams():
     #import models.StandardVAE as params
     #import models.EAVAE_softlaplace as params
     #import models.EAVAE_softlaplace_beta1_1_0_beta2_1_0 as params
-    import models.EAVAE_softlaplace_beta1_1_0_beta2_2_0 as params
-    #import models.EAVAE_softlaplace_beta1_1_0_beta2_0_5 as params
+    #import models.EAVAE_softlaplace_beta1_1_0_beta2_2_0 as params
+    import models.EAVAE_softlaplace_beta1_1_0_beta2_0_5 as params
 
     config = Hyperparams(
         log_params=params.log_params,

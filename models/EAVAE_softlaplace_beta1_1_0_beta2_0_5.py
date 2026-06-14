@@ -60,7 +60,7 @@ softlaplace_manuscript = os.path.join(root, 'experiments/EAVAE_softlaplace/manus
 
 # Your trained models
 # ...
-#checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_0_5/2026-06-03__14-13/checkpoints/checkpoint_5000.pth')
+checkpoint_path = os.path.join(root, 'experiments/EAVAE_softlaplace_beta1_1_0_beta2_0_5/2026-06-07__02-41/checkpoints/checkpoint_5000.pth')
 log_params = Hyperparams(
     name='EAVAE_softlaplace_beta1_1_0_beta2_0_5',
 
@@ -73,7 +73,7 @@ log_params = Hyperparams(
     eval_interval_in_epochs=1,
 
     load_from_train=None,  # resume checkpoint from local path
-    load_from_eval=None,
+    load_from_eval=checkpoint_path,
 )
 
 """
@@ -123,7 +123,7 @@ TRAINING HYPERPARAMETERS
 """
 import math
 batch_size = 512
-NUM_EPOCHS = 5000
+NUM_EPOCHS = 10000
 train_params = Hyperparams(
     # The total number of training updates
     total_train_epochs=NUM_EPOCHS+1,
